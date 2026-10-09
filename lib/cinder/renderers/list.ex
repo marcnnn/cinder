@@ -106,6 +106,12 @@ defmodule Cinder.Renderers.List do
               />
             </div>
             {render_slot(@item_slot, item)}
+            <div :if={has_slot?(assigns, :row_detail_slot)}
+                 class={@theme.row_detail_class}
+                 data-key="row_detail_class"
+                 data-row-detail-for={to_string(Map.get(item, Map.get(assigns, :id_field, :id)))}>
+              {render_slot(@row_detail_slot, item)}
+            </div>
           </div>
         <% else %>
           <!-- No item slot provided - render message -->

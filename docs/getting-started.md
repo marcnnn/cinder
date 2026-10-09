@@ -189,7 +189,7 @@ For more complex interactions:
 
 ### Row Details
 
-In the table layout, the `<:row_detail>` slot renders an extra full-width row beneath each record's row. Use it for content that belongs to the record but doesn't fit a column, such as a list of related records:
+The `<:row_detail>` slot renders extra content beneath each record (also known as an expandable or detail row). Use it for content that belongs to the record but doesn't fit a column, such as a list of related records:
 
 ```heex
 <Cinder.collection query={MyApp.Team |> Ash.Query.load(:members)} actor={@current_user}>
@@ -204,7 +204,9 @@ In the table layout, the `<:row_detail>` slot renders an extra full-width row be
 </Cinder.collection>
 ```
 
-The detail cell spans every column (including the selection checkbox column), and the row is not clickable even when `click` is set. Style it with the `row_detail_class` (row) and `row_detail_cell_class` (cell) theme properties. List and grid layouts ignore the slot.
+In the table layout the content goes in a full-width row beneath the record's row: the cell spans every column (including the selection checkbox column), and the row is not clickable even when `click` is set. Style it with the `row_detail_class` (row) and `row_detail_cell_class` (cell) theme properties.
+
+In the list and grid layouts the content goes inside the item, below the `<:item>` content, in a wrapper styled by `row_detail_class`. Being part of the item, it is clickable when `click` is set.
 
 ## Resource vs Query
 

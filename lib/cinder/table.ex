@@ -100,7 +100,8 @@ defmodule Cinder.Table do
 
   slot :row_detail,
     required: false,
-    doc: "Extra full-width row rendered beneath each record's row; receives the record via :let"
+    doc:
+      "Extra content beneath each record (a full-width row in tables); receives the record via :let"
 
   slot :loading, required: false, doc: "Custom loading state content"
   slot :empty, required: false, doc: "Custom empty state content"

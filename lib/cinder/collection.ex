@@ -76,7 +76,7 @@ defmodule Cinder.Collection do
   |-----------|-------|------|------|-------------|
   | `<:col>` content | ✅ Rendered | ❌ Ignored | ❌ Ignored | Cell content for table rows |
   | `<:item>` slot | ❌ Ignored | ✅ Required | ✅ Required | Template for each item |
-  | `<:row_detail>` slot | ✅ Rendered | ❌ Ignored | ❌ Ignored | Full-width row beneath each row |
+  | `<:row_detail>` slot | ✅ Full-width row | ✅ Below item | ✅ Below item | Extra content beneath each record |
   | `sort_label` | ❌ N/A | ✅ Button label | ✅ Button label | Label for sort button group |
   | `container_class` | ❌ N/A | ✅ Override | ✅ Override | Custom container CSS |
   | `grid_columns` | ❌ N/A | ❌ N/A | ✅ Column count | Number of grid columns |
@@ -295,8 +295,9 @@ defmodule Cinder.Collection do
   slot(:row_detail,
     required: false,
     doc:
-      "Table layout only. Renders an extra full-width row beneath each record's row, " <>
-        "receiving the record via :let. Ignored by list and grid layouts."
+      "Extra content for each record, receiving the record via :let. Tables render it as a " <>
+        "full-width row beneath the record's row; list and grid layouts render it inside " <>
+        "the item, below the <:item> content."
   )
 
   slot(:filter,
