@@ -11,6 +11,7 @@ SPDX-License-Identifier: MIT
 ### Features
 
 * Added a `<:row_detail>` slot for extra content beneath each record, receiving the record via `:let`. Tables render it as a full-width row beneath the record's row; list and grid layouts render it inside the item, below the `<:item>` content. Styled by the new `row_detail_class` and `row_detail_cell_class` theme properties.
+* Added an `<:embers>` slot for the table layout: name a relationship (or a path of them) and Cinder loads it with the collection's query and renders each related record as its own row beneath its parent, with the slot rendering that row's cells. `query` filters/sorts the related records and `empty` adds a row for records without any. Styled by the new `ember_row_class` and `ember_empty_class` theme properties. List and grid layouts ignore it.
 
 ### Bug fixes
 
