@@ -10,7 +10,7 @@ SPDX-License-Identifier: MIT
 
 ### Features
 
-* Added a `<:row_detail>` slot for the table layout: an extra full-width row rendered beneath each record's row, receiving the record via `:let`. Styled by the new `row_detail_class` and `row_detail_cell_class` theme properties. List and grid layouts ignore it.
+* Added a `<:row_detail>` slot for extra content beneath each record, receiving the record via `:let`. Tables render it as a full-width row beneath the record's row; list and grid layouts render it inside the item, below the `<:item>` content. Styled by the new `row_detail_class` and `row_detail_cell_class` theme properties.
 
 ### Bug fixes
 

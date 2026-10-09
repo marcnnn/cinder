@@ -1,7 +1,7 @@
 defmodule Cinder.Integration.RowDetailTest do
   @moduledoc """
   Full-lifecycle coverage for the `row_detail` slot: it reaches the table renderer
-  through `Cinder.collection`, and list layouts ignore it.
+  through `Cinder.collection`, and list and grid layouts render it inside each item.
   """
   use Cinder.ConnCase, async: false
 
@@ -19,6 +19,16 @@ defmodule Cinder.Integration.RowDetailTest do
   defp list_with_detail(assigns) do
     ~H"""
     <Cinder.collection resource={Music.Album} layout={:list}>
+      <:col field="title" sort />
+      <:item :let={album}>{album.title}</:item>
+      <:row_detail :let={album}>Genre: {album.genre}</:row_detail>
+    </Cinder.collection>
+    """
+  end
+
+  defp grid_with_detail(assigns) do
+    ~H"""
+    <Cinder.collection resource={Music.Album} layout={:grid}>
       <:col field="title" sort />
       <:item :let={album}>{album.title}</:item>
       <:row_detail :let={album}>Genre: {album.genre}</:row_detail>
@@ -61,12 +71,21 @@ defmodule Cinder.Integration.RowDetailTest do
     |> refute_has("tr[data-row-detail-for='#{rock.id}']")
   end
 
-  test "list layout ignores the slot", %{conn: conn} do
+  test "list layout renders the detail inside each item", %{conn: conn, jazz: jazz} do
     path = Fixture.register(&list_with_detail/1)
 
     conn
     |> visit(path)
     |> assert_has("*", text: "Jazz Album")
-    |> refute_has("*", text: "Genre: jazz")
+    |> assert_has("div[data-row-detail-for='#{jazz.id}']", text: "Genre: jazz")
+    |> refute_has("tr[data-row-detail-for='#{jazz.id}']")
+  end
+
+  test "grid layout renders the detail inside each item", %{conn: conn, rock: rock} do
+    path = Fixture.register(&grid_with_detail/1)
+
+    conn
+    |> visit(path)
+    |> assert_has("div[data-row-detail-for='#{rock.id}']", text: "Genre: rock")
   end
 end

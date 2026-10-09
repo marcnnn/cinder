@@ -275,8 +275,9 @@ defmodule Cinder.Collection do
   slot(:row_detail,
     required: false,
     doc:
-      "Table layout only. Renders an extra full-width row beneath each record's row, " <>
-        "receiving the record via :let. Ignored by list and grid layouts."
+      "Extra content for each record, receiving the record via :let. Tables render it as a " <>
+        "full-width row beneath the record's row; list and grid layouts render it inside " <>
+        "the item, below the <:item> content."
   )
 
   slot(:filter,
