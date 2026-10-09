@@ -105,10 +105,13 @@ defmodule Cinder.Table do
 
   slot :embers,
     required: false,
-    doc: "Related records rendered as rows beneath each record's row. See `Cinder.Embers`." do
+    doc: "Child rows (sub-rows) for related records beneath each record. See `Cinder.Embers`." do
     attr :relationship, :any, required: true
     attr :query, :any
+    attr :limit, :integer
+    attr :more, :string
     attr :empty, :string
+    attr :cells, :boolean
   end
 
   slot :loading, required: false, doc: "Custom loading state content"

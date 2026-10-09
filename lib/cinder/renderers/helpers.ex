@@ -62,6 +62,19 @@ defmodule Cinder.Renderers.Helpers do
   end
 
   @doc """
+  The child rows of `item` for each `<:embers>` slot entry, as
+  `{slot, related_records, more?}` tuples. See `Cinder.Embers.children/2`.
+  """
+  def embers_for(assigns, item) do
+    assigns
+    |> Map.get(:embers_slot, [])
+    |> Enum.map(fn slot ->
+      {children, more?} = Cinder.Embers.children(item, slot)
+      {slot, children, more?}
+    end)
+  end
+
+  @doc """
   Resolves a user-supplied row/item class for the given item.
 
   A `fn item -> class end` function is called with the item; any other value

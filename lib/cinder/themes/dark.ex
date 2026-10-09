@@ -31,7 +31,9 @@ defmodule Cinder.Themes.Dark do
 
   set :td_class, "px-6 py-4 text-sm text-gray-300"
   set :row_detail_cell_class, "px-6 py-4 text-sm text-gray-300"
-  set :ember_empty_class, "px-6 py-4 text-sm text-gray-300"
+  set :ember_cell_class, "px-6 py-4 text-sm text-gray-300"
+  set :ember_empty_class, "italic text-gray-400"
+  set :ember_more_class, "text-sm text-gray-400"
   set :empty_class, "text-center py-12 text-gray-400 italic"
 
   set :error_container_class,

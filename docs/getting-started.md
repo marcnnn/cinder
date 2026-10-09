@@ -208,9 +208,9 @@ In the table layout the content goes in a full-width row beneath the record's ro
 
 In the list and grid layouts the content goes inside the item, below the `<:item>` content, in a wrapper styled by `row_detail_class`. Being part of the item, it is clickable when `click` is set.
 
-### Embers: Related Records as Rows
+### Embers: Child Rows for Related Records
 
-Where `<:row_detail>` gives each record one free-form row, `<:embers>` lists a relationship: Cinder loads it alongside the collection's query and renders each related record as its own row beneath its parent. The slot renders that row's `<td>` cells, so they can line up with the parent's columns:
+Where `<:row_detail>` gives each record one free-form block, `<:embers>` lists a relationship as child rows (sub-rows, nested rows): Cinder loads it alongside the collection's query and renders each related record as its own row beneath its parent. Cinder renders the wrapper around each child row and the slot provides its content, so the same slot works in every layout:
 
 ```heex
 <Cinder.collection resource={MyApp.Team} actor={@current_user}>
@@ -222,20 +222,33 @@ Where `<:row_detail>` gives each record one free-form row, `<:embers>` lists a r
     :let={member}
     relationship={:members}
     query={MyApp.Member |> Ash.Query.sort(name: :asc)}
+    limit={5}
+    more="More members…"
     empty="No members yet"
   >
-    <td class="pl-8">{member.name}</td>
-    <td>{member.email}</td>
+    {member.name} · {member.email}
   </:embers>
 </Cinder.collection>
 ```
 
 - `relationship` is an atom or a path (`[:org, :members]`); to-many hops along a path are flattened.
 - `query` is an `Ash.Query` on the related resource, applied to the load (with a path, to the last relationship).
-- `empty` adds a full-width row for records without related records; without it they get no ember rows.
+- `limit` caps the child rows per record. Cinder loads one extra related record to know whether there are more, and if so adds a `more` row (default text "More…"). It overrides any limit set on `query`.
+- `empty` adds a row for records without related records; without it they get no child rows.
 - Filtering on related fields uses the ordinary slots with dot notation, as the `members.email` filter above does: it keeps the parent rows that have a matching related record.
 
-Ember rows come before a `<:row_detail>` row, start with an empty cell when the collection is `selectable`, and are not clickable. Style them with the `ember_row_class` and `ember_empty_class` theme properties. List and grid layouts neither render nor load them.
+In the table layout each child row is a `<tr>` beneath the parent's row, with the content in a full-width cell. Child rows come before a `<:row_detail>` row and are not clickable. In the list and grid layouts they go in a container inside the item, below the `<:item>` content, so they are clickable when the item is.
+
+To line child rows up with the parent's columns in a table, add `cells` and render the row's `<td>` cells yourself. When the collection is `selectable`, Cinder adds an empty cell under the checkbox column first. List and grid layouts skip `cells` embers, since `<td>` cells only work in a table:
+
+```heex
+<:embers :let={member} relationship={:members} cells>
+  <td class="pl-8">{member.name}</td>
+  <td>{member.email}</td>
+</:embers>
+```
+
+Style child rows with the `ember_row_class`, `ember_cell_class` (table cell), `ember_container_class` (list/grid container), `ember_empty_class` and `ember_more_class` theme properties.
 
 ## Resource vs Query
 

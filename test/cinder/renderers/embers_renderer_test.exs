@@ -1,7 +1,7 @@
 defmodule Cinder.Renderers.EmbersRendererTest do
   @moduledoc """
-  Table renderer output for the `embers` slot: row order, the selection column
-  and the empty row.
+  Table renderer output for the `embers` slot: row order, the selection column,
+  content and `cells` rows, and the empty and more rows.
   """
 
   use ExUnit.Case, async: true
@@ -61,6 +61,7 @@ defmodule Cinder.Renderers.EmbersRendererTest do
       %{
         __slot__: :embers,
         relationship: :members,
+        cells: true,
         inner_block: fn _, member ->
           assigns = %{member: member}
 
@@ -107,7 +108,7 @@ defmodule Cinder.Renderers.EmbersRendererTest do
     assert cell |> LazyHTML.attribute("colspan") == ["2"]
   end
 
-  test "ember rows start with an empty cell under the selection column" do
+  test "cells ember rows start with an empty cell under the selection column" do
     html =
       %{selectable: true}
       |> render_table()
@@ -130,6 +131,48 @@ defmodule Cinder.Renderers.EmbersRendererTest do
 
     assert ember |> LazyHTML.attribute("class") |> Enum.all?(&(&1 =~ "theme-ember"))
     assert ember |> LazyHTML.attribute("phx-click") == []
+  end
+
+  test "without cells, Cinder renders the content in a full-width cell" do
+    content =
+      embers_slot(%{
+        cells: false,
+        inner_block: fn _, member ->
+          assigns = %{member: member}
+
+          ~H"""
+          <span class="member">{@member.name}</span>
+          """
+        end
+      })
+
+    cells =
+      %{selectable: true, embers_slot: [content]}
+      |> render_table()
+      |> LazyHTML.from_fragment()
+      |> LazyHTML.query("tr[data-ember-for='1'] td")
+
+    assert Enum.map(cells, &String.trim(LazyHTML.text(&1))) == ["Ann", "Ben"]
+    assert LazyHTML.attribute(cells, "colspan") == ["3", "3"]
+    assert LazyHTML.attribute(cells, "data-key") == ["ember_cell_class", "ember_cell_class"]
+  end
+
+  test "limit renders the first related records and a more row" do
+    assert [
+             {"1", nil, _},
+             {nil, "1", "Ann"},
+             {nil, nil, "More…"},
+             {"2", nil, _}
+           ] = rows(%{embers_slot: [embers_slot(%{limit: 1})]})
+
+    more =
+      %{embers_slot: [embers_slot(%{limit: 1, more: "See all"})]}
+      |> render_table()
+      |> LazyHTML.from_fragment()
+      |> LazyHTML.query("tr[data-ember-more-for='1'] td")
+
+    assert LazyHTML.text(more) =~ "See all"
+    assert LazyHTML.attribute(more, "colspan") == ["2"]
   end
 
   test "renders no ember rows without the slot" do

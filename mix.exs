@@ -111,6 +111,7 @@ defmodule Cinder.MixProject do
           Cinder,
           Cinder.Collection,
           Cinder.Controls,
+          Cinder.Embers,
           Cinder.LiveComponent
         ],
         "URL State Management": [

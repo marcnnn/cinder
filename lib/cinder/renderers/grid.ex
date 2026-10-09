@@ -13,6 +13,7 @@ defmodule Cinder.Renderers.Grid do
   import Cinder.Renderers.Helpers
 
   alias Cinder.Renderers.BulkActions
+  alias Cinder.Renderers.Embers, as: EmbersRenderer
   alias Cinder.Renderers.Pagination
   alias Cinder.Renderers.SortControls
   alias Cinder.Selection
@@ -108,6 +109,13 @@ defmodule Cinder.Renderers.Grid do
               />
             </div>
             {render_slot(@item_slot, item)}
+            <EmbersRenderer.render
+              :if={has_slot?(assigns, :embers_slot)}
+              item={item}
+              item_id={to_string(Map.get(item, Map.get(assigns, :id_field, :id)))}
+              embers_slot={@embers_slot}
+              theme={@theme}
+            />
             <div :if={has_slot?(assigns, :row_detail_slot)}
                  class={@theme.row_detail_class}
                  data-key="row_detail_class"

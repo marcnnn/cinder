@@ -288,19 +288,18 @@ Empty slot context: `filtered?`, `filters`, `search_term`. State precedence: loa
 
 Table: a full-width row beneath each record's row (not clickable, spans all columns). List/grid: a wrapper inside the item, below `<:item>`. Theme properties: `row_detail_class`, `row_detail_cell_class` (table only).
 
-## Embers Slot (table layout)
+## Embers Slot (child rows / sub-rows)
 
 ```heex
 <Cinder.collection resource={MyApp.Team} actor={@current_user}>
   <:col :let={team} field="name">{team.name}</:col>
-  <:embers :let={member} relationship={:members} empty="No members yet">
-    <td>{member.name}</td>
-    <td>{member.email}</td>
+  <:embers :let={member} relationship={:members} limit={5} empty="No members yet">
+    {member.name} · {member.email}
   </:embers>
 </Cinder.collection>
 ```
 
-Loads the relationship (atom or path like `[:org, :members]`) and renders one row per related record beneath its parent; the slot renders the `<td>` cells. `query={Ash.Query}` filters/sorts the related records. Theme properties: `ember_row_class`, `ember_empty_class`. Ignored by list/grid layouts.
+Loads the relationship (atom or path like `[:org, :members]`) and renders one child row per related record beneath its parent; the slot provides the row's content, Cinder the wrapper (table: full-width cell; list/grid: container inside the item). `query={Ash.Query}` filters/sorts the related records. `limit={n}` caps the rows and adds a `more="..."` row when cut off. `cells` makes the slot render the row's `<td>` cells to align with the columns (table only; list/grid skip it). Theme properties: `ember_row_class`, `ember_cell_class`, `ember_container_class`, `ember_empty_class`, `ember_more_class`.
 
 ## URL State Management
 

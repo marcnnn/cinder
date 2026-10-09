@@ -77,7 +77,7 @@ defmodule Cinder.Collection do
   | `<:col>` content | ✅ Rendered | ❌ Ignored | ❌ Ignored | Cell content for table rows |
   | `<:item>` slot | ❌ Ignored | ✅ Required | ✅ Required | Template for each item |
   | `<:row_detail>` slot | ✅ Full-width row | ✅ Below item | ✅ Below item | Extra content beneath each record |
-  | `<:embers>` slot | ✅ Rendered | ❌ Ignored | ❌ Ignored | Related records as rows beneath each row |
+  | `<:embers>` slot | ✅ Child rows | ✅ Below item | ✅ Below item | Related records as child rows (sub-rows) |
   | `sort_label` | ❌ N/A | ✅ Button label | ✅ Button label | Label for sort button group |
   | `container_class` | ❌ N/A | ✅ Override | ✅ Override | Custom container CSS |
   | `grid_columns` | ❌ N/A | ❌ N/A | ✅ Column count | Number of grid columns |
@@ -304,9 +304,9 @@ defmodule Cinder.Collection do
   slot(:embers,
     required: false,
     doc:
-      "Table layout only. Loads a relationship and renders each related record as its own " <>
-        "row beneath its parent's row; the slot receives the related record via :let and " <>
-        "renders the row's <td> cells. See `Cinder.Embers`."
+      "Child rows (sub-rows) for related records. Loads a relationship and renders each " <>
+        "related record as its own child row beneath its parent; the slot receives the " <>
+        "related record via :let and renders the row's content. See `Cinder.Embers`."
   ) do
     attr(:relationship, :any,
       required: true,
@@ -314,7 +314,13 @@ defmodule Cinder.Collection do
     )
 
     attr(:query, :any, doc: "Ash.Query on the related resource used for the load")
-    attr(:empty, :string, doc: "Full-width row text for a record without related records")
+    attr(:limit, :integer, doc: "Most child rows per record; a `more` row follows when cut off")
+    attr(:more, :string, doc: "Text for the row shown when `limit` cut off related records")
+    attr(:empty, :string, doc: "Text for a row when a record has no related records")
+
+    attr(:cells, :boolean,
+      doc: "Table only: the slot renders the row's <td> cells, to align with the columns"
+    )
   end
 
   slot(:filter,
@@ -465,8 +471,8 @@ defmodule Cinder.Collection do
     # Get the row detail slot for the table layout
     row_detail_slot = Map.get(assigns, :row_detail, [])
 
-    # Embers are table-only: other layouts neither render nor load them
-    embers_slot = if layout == :table, do: Map.get(assigns, :embers, []), else: []
+    # Only the embers this layout can render get loaded
+    embers_slot = assigns |> Map.get(:embers, []) |> Cinder.Embers.for_layout(layout)
     normalized_query = Cinder.Embers.load(normalized_query, embers_slot)
 
     # Get the bulk_action slots
