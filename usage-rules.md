@@ -288,6 +288,20 @@ Empty slot context: `filtered?`, `filters`, `search_term`. State precedence: loa
 
 Table: a full-width row beneath each record's row (not clickable, spans all columns). List/grid: a wrapper inside the item, below `<:item>`. Theme properties: `row_detail_class`, `row_detail_cell_class` (table only).
 
+## Embers Slot (table layout)
+
+```heex
+<Cinder.collection resource={MyApp.Team} actor={@current_user}>
+  <:col :let={team} field="name">{team.name}</:col>
+  <:embers :let={member} relationship={:members} empty="No members yet">
+    <td>{member.name}</td>
+    <td>{member.email}</td>
+  </:embers>
+</Cinder.collection>
+```
+
+Loads the relationship (atom or path like `[:org, :members]`) and renders one row per related record beneath its parent; the slot renders the `<td>` cells. `query={Ash.Query}` filters/sorts the related records. Theme properties: `ember_row_class`, `ember_empty_class`. Ignored by list/grid layouts.
+
 ## URL State Management
 
 Enable bookmarkable, shareable collection states:

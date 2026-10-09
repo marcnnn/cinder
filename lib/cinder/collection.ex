@@ -77,6 +77,7 @@ defmodule Cinder.Collection do
   | `<:col>` content | ✅ Rendered | ❌ Ignored | ❌ Ignored | Cell content for table rows |
   | `<:item>` slot | ❌ Ignored | ✅ Required | ✅ Required | Template for each item |
   | `<:row_detail>` slot | ✅ Full-width row | ✅ Below item | ✅ Below item | Extra content beneath each record |
+  | `<:embers>` slot | ✅ Rendered | ❌ Ignored | ❌ Ignored | Related records as rows beneath each row |
   | `sort_label` | ❌ N/A | ✅ Button label | ✅ Button label | Label for sort button group |
   | `container_class` | ❌ N/A | ✅ Override | ✅ Override | Custom container CSS |
   | `grid_columns` | ❌ N/A | ❌ N/A | ✅ Column count | Number of grid columns |
@@ -300,6 +301,22 @@ defmodule Cinder.Collection do
         "the item, below the <:item> content."
   )
 
+  slot(:embers,
+    required: false,
+    doc:
+      "Table layout only. Loads a relationship and renders each related record as its own " <>
+        "row beneath its parent's row; the slot receives the related record via :let and " <>
+        "renders the row's <td> cells. See `Cinder.Embers`."
+  ) do
+    attr(:relationship, :any,
+      required: true,
+      doc: "Relationship name, or a list of names to reach through other relationships"
+    )
+
+    attr(:query, :any, doc: "Ash.Query on the related resource used for the load")
+    attr(:empty, :string, doc: "Full-width row text for a record without related records")
+  end
+
   slot(:filter,
     required: false,
     doc: "Filter-only slots for filtering without display columns"
@@ -448,6 +465,10 @@ defmodule Cinder.Collection do
     # Get the row detail slot for the table layout
     row_detail_slot = Map.get(assigns, :row_detail, [])
 
+    # Embers are table-only: other layouts neither render nor load them
+    embers_slot = if layout == :table, do: Map.get(assigns, :embers, []), else: []
+    normalized_query = Cinder.Embers.load(normalized_query, embers_slot)
+
     # Get the bulk_action slots
     bulk_action_slots = Map.get(assigns, :bulk_action, [])
 
@@ -480,6 +501,7 @@ defmodule Cinder.Collection do
       |> assign(:renderer, renderer)
       |> assign(:item_slot, item_slot)
       |> assign(:row_detail_slot, row_detail_slot)
+      |> assign(:embers_slot, embers_slot)
       |> assign(:bulk_action_slots, bulk_action_slots)
       |> assign(:controls_slot, controls_slot)
       |> assign(:loading_slot, loading_slot)
@@ -526,6 +548,7 @@ defmodule Cinder.Collection do
         item_class={@item_class}
         item_slot={@item_slot}
         row_detail_slot={@row_detail_slot}
+        embers_slot={@embers_slot}
         container_class={@container_class}
         grid_columns={@grid_columns}
         search_enabled={@search_enabled}

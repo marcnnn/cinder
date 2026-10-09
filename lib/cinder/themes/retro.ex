@@ -32,6 +32,7 @@ defmodule Cinder.Themes.Retro do
 
   set :td_class, "px-6 py-4 text-sm text-cyan-100 font-medium"
   set :row_detail_cell_class, "px-6 py-4 text-sm text-cyan-100 font-medium"
+  set :ember_empty_class, "px-6 py-4 text-sm text-cyan-100 font-medium"
 
   set :empty_class,
       "text-center py-12 text-cyan-100 italic font-bold bg-gray-800/50 border border-cyan-400"

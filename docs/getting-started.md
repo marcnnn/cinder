@@ -208,6 +208,35 @@ In the table layout the content goes in a full-width row beneath the record's ro
 
 In the list and grid layouts the content goes inside the item, below the `<:item>` content, in a wrapper styled by `row_detail_class`. Being part of the item, it is clickable when `click` is set.
 
+### Embers: Related Records as Rows
+
+Where `<:row_detail>` gives each record one free-form row, `<:embers>` lists a relationship: Cinder loads it alongside the collection's query and renders each related record as its own row beneath its parent. The slot renders that row's `<td>` cells, so they can line up with the parent's columns:
+
+```heex
+<Cinder.collection resource={MyApp.Team} actor={@current_user}>
+  <:col :let={team} field="name" filter sort>{team.name}</:col>
+  <:col :let={team} field="status" filter>{team.status}</:col>
+  <:filter field="members.email" type={:text} label="Member email" />
+
+  <:embers
+    :let={member}
+    relationship={:members}
+    query={MyApp.Member |> Ash.Query.sort(name: :asc)}
+    empty="No members yet"
+  >
+    <td class="pl-8">{member.name}</td>
+    <td>{member.email}</td>
+  </:embers>
+</Cinder.collection>
+```
+
+- `relationship` is an atom or a path (`[:org, :members]`); to-many hops along a path are flattened.
+- `query` is an `Ash.Query` on the related resource, applied to the load (with a path, to the last relationship).
+- `empty` adds a full-width row for records without related records; without it they get no ember rows.
+- Filtering on related fields uses the ordinary slots with dot notation, as the `members.email` filter above does: it keeps the parent rows that have a matching related record.
+
+Ember rows come before a `<:row_detail>` row, start with an empty cell when the collection is `selectable`, and are not clickable. Style them with the `ember_row_class` and `ember_empty_class` theme properties. List and grid layouts neither render nor load them.
+
 ## Resource vs Query
 
 Cinder supports two ways to specify data: `resource` for simple cases, `query` for advanced requirements.

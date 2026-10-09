@@ -29,6 +29,7 @@ defmodule Cinder.Themes.Modern do
 
   set :td_class, "px-6 py-4 text-sm text-gray-700"
   set :row_detail_cell_class, "px-6 py-4 text-sm text-gray-700"
+  set :ember_empty_class, "px-6 py-4 text-sm text-gray-700"
   set :empty_class, "text-center py-12 text-gray-500 italic"
   set :error_container_class, "bg-red-50 border border-red-200 rounded-lg p-4 text-red-700"
   set :error_message_class, "text-sm"

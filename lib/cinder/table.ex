@@ -103,6 +103,14 @@ defmodule Cinder.Table do
     doc:
       "Extra content beneath each record (a full-width row in tables); receives the record via :let"
 
+  slot :embers,
+    required: false,
+    doc: "Related records rendered as rows beneath each record's row. See `Cinder.Embers`." do
+    attr :relationship, :any, required: true
+    attr :query, :any
+    attr :empty, :string
+  end
+
   slot :loading, required: false, doc: "Custom loading state content"
   slot :empty, required: false, doc: "Custom empty state content"
   slot :error, required: false, doc: "Custom error state content"

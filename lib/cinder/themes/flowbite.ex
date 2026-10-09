@@ -35,6 +35,7 @@ defmodule Cinder.Themes.Flowbite do
   set :th_class, "px-6 py-3 whitespace-nowrap font-medium"
   set :td_class, "px-6 py-4"
   set :row_detail_cell_class, "px-6 py-4"
+  set :ember_empty_class, "px-6 py-4"
   set :empty_class, "text-center py-8 text-gray-500 dark:text-gray-400"
 
   set :error_container_class,
