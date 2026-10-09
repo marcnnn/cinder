@@ -33,6 +33,7 @@ defmodule Cinder.Themes.Compact do
 
   set :td_class, "px-3 py-2 text-sm text-gray-900"
   set :row_detail_cell_class, "px-3 py-2 text-sm text-gray-900"
+  set :ember_empty_class, "px-3 py-2 text-sm text-gray-900"
   set :empty_class, "text-center py-6 text-gray-500 text-sm italic"
 
   set :error_container_class,

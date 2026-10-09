@@ -105,6 +105,23 @@ defmodule Cinder.Renderers.Table do
                   {render_slot(column.slot, item)}
                 </td>
               </tr>
+              <%= for {ember_slot, children} <- embers_for(assigns, item) do %>
+                <tr :for={child <- children}
+                    class={@theme.ember_row_class}
+                    data-key="ember_row_class"
+                    data-ember-for={to_string(Map.get(item, @id_field))}>
+                  <td :if={Selection.enabled?(@selectable)} class={[@theme.td_class, "w-10"]} data-key="td_class"></td>
+                  {render_slot(ember_slot, child)}
+                </tr>
+                <tr :if={children == [] and is_binary(ember_slot[:empty])}
+                    class={@theme.ember_row_class}
+                    data-key="ember_row_class"
+                    data-ember-for={to_string(Map.get(item, @id_field))}>
+                  <td colspan={column_count(@columns, @selectable)} class={@theme.ember_empty_class} data-key="ember_empty_class">
+                    {ember_slot.empty}
+                  </td>
+                </tr>
+              <% end %>
               <tr :if={has_slot?(assigns, :row_detail_slot)}
                   class={@theme.row_detail_class}
                   data-key="row_detail_class"
@@ -183,6 +200,12 @@ defmodule Cinder.Renderers.Table do
   end
 
   defp all_page_selected?(_selected_ids, _data, _id_field, _selectable), do: false
+
+  defp embers_for(assigns, item) do
+    assigns
+    |> Map.get(:embers_slot, [])
+    |> Enum.map(&{&1, Cinder.Embers.children(item, &1)})
+  end
 
   defp column_count(columns, selectable) do
     base_count = length(columns)
