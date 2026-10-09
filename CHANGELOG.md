@@ -8,6 +8,10 @@ SPDX-License-Identifier: MIT
 
 ## Unreleased
 
+### Features
+
+* Added a `<:row_detail>` slot for the table layout: an extra full-width row rendered beneath each record's row, receiving the record via `:let`. Styled by the new `row_detail_class` and `row_detail_cell_class` theme properties. List and grid layouts ignore it.
+
 ### Bug fixes
 
 * A form filter whose type raises while processing its input, or has no module, is now left out with an error logged, instead of filtering as text.
