@@ -275,6 +275,19 @@ The `<:controls>` slot replaces the default filter/search layout while keeping s
 
 Empty slot context: `filtered?`, `filters`, `search_term`. State precedence: loading > error > empty > data.
 
+## Row Detail Slot (table layout)
+
+```heex
+<Cinder.collection query={MyApp.Team |> Ash.Query.load(:members)} actor={@current_user}>
+  <:col :let={team} field="name">{team.name}</:col>
+  <:row_detail :let={team}>
+    <span :for={member <- team.members}>{member.email}</span>
+  </:row_detail>
+</Cinder.collection>
+```
+
+Renders a full-width row beneath each record's row (not clickable, spans all columns). Theme properties: `row_detail_class`, `row_detail_cell_class`. Ignored by list/grid layouts.
+
 ## URL State Management
 
 Enable bookmarkable, shareable collection states:

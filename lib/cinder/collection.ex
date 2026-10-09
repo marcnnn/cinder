@@ -76,6 +76,7 @@ defmodule Cinder.Collection do
   |-----------|-------|------|------|-------------|
   | `<:col>` content | ✅ Rendered | ❌ Ignored | ❌ Ignored | Cell content for table rows |
   | `<:item>` slot | ❌ Ignored | ✅ Required | ✅ Required | Template for each item |
+  | `<:row_detail>` slot | ✅ Rendered | ❌ Ignored | ❌ Ignored | Full-width row beneath each row |
   | `sort_label` | ❌ N/A | ✅ Button label | ✅ Button label | Label for sort button group |
   | `container_class` | ❌ N/A | ✅ Override | ✅ Override | Custom container CSS |
   | `grid_columns` | ❌ N/A | ❌ N/A | ✅ Column count | Number of grid columns |
@@ -291,6 +292,13 @@ defmodule Cinder.Collection do
     doc: "Template for rendering each item (required for list/grid layouts)"
   )
 
+  slot(:row_detail,
+    required: false,
+    doc:
+      "Table layout only. Renders an extra full-width row beneath each record's row, " <>
+        "receiving the record via :let. Ignored by list and grid layouts."
+  )
+
   slot(:filter,
     required: false,
     doc: "Filter-only slots for filtering without display columns"
@@ -436,6 +444,9 @@ defmodule Cinder.Collection do
     # Get the item slot for list/grid layouts
     item_slot = Map.get(assigns, :item, [])
 
+    # Get the row detail slot for the table layout
+    row_detail_slot = Map.get(assigns, :row_detail, [])
+
     # Get the bulk_action slots
     bulk_action_slots = Map.get(assigns, :bulk_action, [])
 
@@ -467,6 +478,7 @@ defmodule Cinder.Collection do
       |> assign(:pagination_mode, pagination_mode)
       |> assign(:renderer, renderer)
       |> assign(:item_slot, item_slot)
+      |> assign(:row_detail_slot, row_detail_slot)
       |> assign(:bulk_action_slots, bulk_action_slots)
       |> assign(:controls_slot, controls_slot)
       |> assign(:loading_slot, loading_slot)
@@ -512,6 +524,7 @@ defmodule Cinder.Collection do
         item_click={@item_click}
         item_class={@item_class}
         item_slot={@item_slot}
+        row_detail_slot={@row_detail_slot}
         container_class={@container_class}
         grid_columns={@grid_columns}
         search_enabled={@search_enabled}

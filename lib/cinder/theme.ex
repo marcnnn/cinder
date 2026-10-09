@@ -66,6 +66,8 @@ defmodule Cinder.Theme do
     row_class: "",
     th_class: "text-left whitespace-nowrap",
     td_class: "",
+    row_detail_class: "",
+    row_detail_cell_class: "",
     empty_class: "text-center py-4",
     error_container_class: "text-red-600 text-sm",
     error_message_class: "",

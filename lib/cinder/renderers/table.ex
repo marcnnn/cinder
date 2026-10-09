@@ -83,27 +83,37 @@ defmodule Cinder.Renderers.Table do
             </tr>
           </thead>
           <tbody class={[@theme.tbody_class, (@loading && "opacity-75" || "")]} data-key="tbody_class">
-            <tr :for={item <- @data} :if={not @error}
-                class={selection_classes(@theme.row_class, Map.get(assigns, :item_class), @row_click, @selectable, @selected_ids, item, @id_field, Map.get(@theme, :selected_row_class))}
-                data-item-id={to_string(Map.get(item, @id_field))}
-                data-key="row_class"
-                phx-click={selection_click_action(@row_click, @selectable, @selected_ids, item, @id_field, @myself)}>
-              <td :if={Selection.enabled?(@selectable)} class={[@theme.td_class, "w-10"]} data-key="td_class">
-                <input
-                  type="checkbox"
-                  disabled={not Selection.item_toggleable?(@selectable, @selected_ids, item, @id_field)}
-                  checked={Selection.item_selected?(@selected_ids, item, @id_field)}
-                  phx-click="toggle_select"
-                  phx-value-id={to_string(Map.get(item, @id_field))}
-                  phx-target={@myself}
-                  class={@theme.selection_checkbox_class}
-                  data-key="selection_checkbox_class"
-                />
-              </td>
-              <td :for={column <- @columns} class={[@theme.td_class, column.class]} data-key="td_class">
-                {render_slot(column.slot, item)}
-              </td>
-            </tr>
+            <%= for item <- @data, not @error do %>
+              <tr
+                  class={selection_classes(@theme.row_class, Map.get(assigns, :item_class), @row_click, @selectable, @selected_ids, item, @id_field, Map.get(@theme, :selected_row_class))}
+                  data-item-id={to_string(Map.get(item, @id_field))}
+                  data-key="row_class"
+                  phx-click={selection_click_action(@row_click, @selectable, @selected_ids, item, @id_field, @myself)}>
+                <td :if={Selection.enabled?(@selectable)} class={[@theme.td_class, "w-10"]} data-key="td_class">
+                  <input
+                    type="checkbox"
+                    disabled={not Selection.item_toggleable?(@selectable, @selected_ids, item, @id_field)}
+                    checked={Selection.item_selected?(@selected_ids, item, @id_field)}
+                    phx-click="toggle_select"
+                    phx-value-id={to_string(Map.get(item, @id_field))}
+                    phx-target={@myself}
+                    class={@theme.selection_checkbox_class}
+                    data-key="selection_checkbox_class"
+                  />
+                </td>
+                <td :for={column <- @columns} class={[@theme.td_class, column.class]} data-key="td_class">
+                  {render_slot(column.slot, item)}
+                </td>
+              </tr>
+              <tr :if={has_slot?(assigns, :row_detail_slot)}
+                  class={@theme.row_detail_class}
+                  data-key="row_detail_class"
+                  data-row-detail-for={to_string(Map.get(item, @id_field))}>
+                <td colspan={column_count(@columns, @selectable)} class={@theme.row_detail_cell_class} data-key="row_detail_cell_class">
+                  {render_slot(@row_detail_slot, item)}
+                </td>
+              </tr>
+            <% end %>
             <!-- Error State -->
             <tr :if={@error and not @loading}>
               <td colspan={column_count(@columns, @selectable)} class={@theme.empty_class} data-key="error_class">

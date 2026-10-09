@@ -187,6 +187,25 @@ For more complex interactions:
 </Cinder.collection>
 ```
 
+### Row Details
+
+In the table layout, the `<:row_detail>` slot renders an extra full-width row beneath each record's row. Use it for content that belongs to the record but doesn't fit a column, such as a list of related records:
+
+```heex
+<Cinder.collection query={MyApp.Team |> Ash.Query.load(:members)} actor={@current_user}>
+  <:col :let={team} field="name" filter sort>{team.name}</:col>
+  <:col :let={team} field="status" filter>{team.status}</:col>
+
+  <:row_detail :let={team}>
+    <ul>
+      <li :for={member <- team.members}>{member.name} · {member.email}</li>
+    </ul>
+  </:row_detail>
+</Cinder.collection>
+```
+
+The detail cell spans every column (including the selection checkbox column), and the row is not clickable even when `click` is set. Style it with the `row_detail_class` (row) and `row_detail_cell_class` (cell) theme properties. List and grid layouts ignore the slot.
+
 ## Resource vs Query
 
 Cinder supports two ways to specify data: `resource` for simple cases, `query` for advanced requirements.

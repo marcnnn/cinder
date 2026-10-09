@@ -32,6 +32,7 @@ defmodule Cinder.Themes.Futuristic do
       "px-6 py-4 text-left text-sm font-light text-blue-100 tracking-wider whitespace-nowrap border-b border-blue-500/30 bg-gradient-to-r from-transparent to-blue-500/5"
 
   set :td_class, "px-6 py-4 text-sm text-slate-200 font-light"
+  set :row_detail_cell_class, "px-6 py-4 text-sm text-slate-200 font-light"
   set :empty_class, "text-center py-12 text-green-400 italic font-light tracking-wide"
 
   set :error_container_class,

@@ -6,6 +6,7 @@
 
 * Added `initial_load={:sync}`, which puts the first page of data in the server-rendered HTML. Thanks @Alt-iOS! ([#203](https://github.com/sevenseacat/cinder/pull/203))
 * `on_query_change` payloads now carry a `count` key with the total matching records, so parents no longer need their own `Ash.count!`. Thanks @mbaertschi! ([#208](https://github.com/sevenseacat/cinder/pull/208))
+* Added a `<:row_detail>` slot for the table layout: an extra full-width row rendered beneath each record's row, receiving the record via `:let`. Styled by the new `row_detail_class` and `row_detail_cell_class` theme properties. List and grid layouts ignore it.
 
 ## v0.17.0 (2026-08-08)
 
