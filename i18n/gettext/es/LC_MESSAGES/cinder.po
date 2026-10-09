@@ -258,3 +258,8 @@ msgstr[1] "Seleccionar los %{count} resultados"
 #, elixir-autogen, elixir-format
 msgid "Try again"
 msgstr "Reintentar"
+
+#: lib/cinder/embers.ex
+#, elixir-autogen, elixir-format
+msgid "More…"
+msgstr "Más…"

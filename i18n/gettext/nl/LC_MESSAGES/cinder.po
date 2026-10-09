@@ -258,3 +258,8 @@ msgstr[1] "Alle %{count} resultaten selecteren"
 #, elixir-autogen, elixir-format
 msgid "Try again"
 msgstr "Opnieuw proberen"
+
+#: lib/cinder/embers.ex
+#, elixir-autogen, elixir-format
+msgid "More…"
+msgstr "Meer…"
